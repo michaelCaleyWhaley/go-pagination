@@ -6,6 +6,13 @@ import (
 )
 
 func CreatePeople() {
+	var people []models.Person
+	DB.Limit(10).Find(&people)
+
+	if len(people) > 0 {
+		return
+	}
+
 	names := []string{
 		"Aaran",
 		"Aaren",

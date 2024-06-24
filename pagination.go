@@ -22,6 +22,7 @@ func main() {
 	app.Static("/assets", "./assets")
 
 	app.GET("/", controllers.PeopleIndexGET)
+	app.GET("/page/:page", controllers.PeopleIndexGET)
 
 	app.Run()
 }
