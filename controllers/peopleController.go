@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"pagination/helpers"
 	"pagination/initialisers"
 	"pagination/models"
 	"strconv"
@@ -10,10 +11,13 @@ import (
 )
 
 type PaginationData struct {
-	NextPage     int
-	PreviousPage int
-	CurrentPage  int
-	TotalPages   int
+	NextPage        int
+	PreviousPage    int
+	CurrentPage     int
+	TotalPages      int
+	TwoPreviousPage int
+	TwoNextPage     int
+	ThreeNextPage   int
 }
 
 func PeopleIndexGET(c *gin.Context) {
@@ -25,17 +29,13 @@ func PeopleIndexGET(c *gin.Context) {
 		pageNo, _ = strconv.Atoi(pageString)
 	}
 
-	var totalRows int64
-	initialisers.DB.Model(&models.Person{}).Count(&totalRows)
-	totalPages := float64(totalRows / int64(perPage))
-
-	offset := (pageNo - 1) * perPage
+	pagination := helpers.GetPagintionData(pageNo, perPage, &models.Person{}, "/people")
 
 	var people []models.Person
-	initialisers.DB.Limit(perPage).Offset(offset).Find(&people)
+	initialisers.DB.Limit(perPage).Offset(pagination.Offset).Find(&people)
 
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"people":     people,
-		"pagination": PaginationData{NextPage: pageNo + 1, PreviousPage: pageNo - 1, CurrentPage: pageNo, TotalPages: int(totalPages)},
+		"pagination": pagination,
 	})
 }
