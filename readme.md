@@ -1,6 +1,6 @@
 # Pagination example
 
-This is a server written in Go which servers paginated people data.
+This is a server, written in Go, which serves paginated people data.
 
 To start the application run: `go run pagination.go`.
 
